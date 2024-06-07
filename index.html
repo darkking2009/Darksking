@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montag</title>
+    <link rel="shortcut icon" href="./mika-baumeister-J5yoGZLdpSI-unsplash.jpg" type="image/x-icon">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #222;
+    color: #fff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.crud {
+    width: 80%;
+    margin: auto;
+}
+
+.head {
+    text-align: center;
+    text-transform: uppercase;
+    margin: 10px 0;
+}
+
+input {
+    width: 100%;
+    height: 30px;
+    outline: none;
+    border: none;
+    background: #111;
+    margin: 4px 0;
+    border-radius: 4px;
+    padding: 4px;
+    color: white;
+}
+
+input:focus {
+    background-color: black;
+    transform: scale(1.1);
+}
+
+.price input {
+    width: 20%;
+}
+
+#total {
+    background: #a00d02;
+    padding: 5px 2px;
+    border-radius: 4px;
+
+}
+
+
+#total::before {
+    content: "Total:";
+}
+
+button {
+    width: 100%;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    background-color: #39005a;
+    border-radius: 20px;
+    color: white;
+    transition: 0.5s;
+}
+
+button:hover {
+    background: #75018a;
+    letter-spacing: 1px;
+
+}
+
+.btnsearch {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.btnsearch button {
+    width: 45%;
+}
+table{
+    width: 100%;
+    text-align: center;
+    margin: 10px 0; 
+}
+table th{
+    text-transform: uppercase;
+}
+th,td{
+    padding: 5px;
+}
+#deleteAll{
+    margin: 20px 0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="crud">
+        <div class="head">
+            <h2>CRUD</h2>
+            <p>product management system</p>
+        </div>
+        <div class="inputs">
+            <input type="text" id="title" placeholder="titel">
+            <div class="price">
+                <input onkeyup="getTotal()" type="number" id="price" placeholder="price">
+                <input onkeyup="getTotal()" type="number" id="taxes" placeholder="taxes">
+                <input onkeyup="getTotal()" type="number" id="ads" placeholder="ads">
+                <input onkeyup="getTotal()" type="number" id="discount" placeholder="discount">
+                <small id="total"></small>
+            </div>
+            <input type="number" id="count" placeholder="count">
+            <input type="text" id="category" placeholder="category">
+            <button id="submit">create</button>
+
+
+
+        </div>
+        <div class="outputs">
+            <div class="searchblock">
+                <input type="text" id="search" placeholder="search">
+                <div class="btnsearch">
+                    <button id="searchTitle">Search By Title</button>
+                    <button id="SearchCategory">Search By Category</button>
+                </div>
+                <div id="deleteAll">
+                    
+                </div>
+                <table >
+                    <tr>
+                        <th>id</th>
+                        <th>title</th>
+                        <th>price</th>
+                        <th>taxes</th>
+                        <th>ads</th>
+                        <th>discount</th>
+                        <th>total</th>
+                        <th>category</th>
+                        <th>update</th>
+                        <th>delete</th>4
+                    </tr>
+                </table>
+                <table  id="table">
+    
+                    
+                </table>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+    <script>
+        let titel = document.getElementById('title');
+let price = document.getElementById('price');
+let taxes = document.getElementById('taxes');
+let ads = document.getElementById('ads');
+let discount = document.getElementById('discount');
+let total = document.getElementById('total');
+let count = document.getElementById('count');
+let category = document.getElementById('category');
+let submit = document.getElementById('submit');
+
+function getTotal() {
+    if (price.value != '') {
+        let result = (+price.value + +taxes.value + +ads.value) - discount.value
+        total.innerHTML = result
+        total.style.background = '#040';
+    }
+    else {
+        total.innerHTML = '';
+        total.style.background = '#a00d02';
+
+    }
+};
+let datepro;
+if (localStorage.product != null) {
+    datepro = JSON.parse(localStorage.product)
+}
+else {
+    datepro = [];
+};
+
+submit.onclick = function () {
+    let newpro = {
+        titel: titel.value,
+        price: price.value,
+        taxes: taxes.value,
+        ads: ads.value,
+        discount: discount.value,
+        total: total.innerHTML,
+        count: count.value,
+        category: category.value,
+    }
+    if (newpro.count > 1) {
+        for (let i = 0; i < newpro.count; i++) {
+            datepro.push(newpro);
+        }
+    }
+    else {
+        datepro.push(newpro);
+    }
+    datepro.push(newpro);
+    localStorage.setItem('product', JSON.stringify(datepro))
+    console.log(datepro);
+    clearData()
+    showData()
+};
+
+
+
+function clearData() {
+    titel.value = '';
+    price.value = '';
+    taxes.value = '';
+    ads.value = '';
+    discount.value = '';
+    total.innerHTML = '';
+    count.value = '';
+    category.value = '';
+};
+
+
+
+function showData() {
+    let table = '';
+    for (let i = 0; i < datepro.length; i++) {
+        table += `
+     <tr>
+        <td>${i}</td>
+        <td>${datepro[i].titel}</td>
+        <td>${datepro[i].price}</td>
+        <td>${datepro[i].taxes}</td>
+        <td>${datepro[i].ads}</td>
+        <td>${datepro[i].discount}</td>
+        <td>${datepro[i].total}</td>
+        <td>${datepro[i].category}</td>
+        <td><button onclick="updateDate()" id="update">update</button></td>
+        <td><button onclick="deleteDate(${i})" id="delete">delete</button></td>
+      </tr >`
+     
+    };
+
+    document.getElementById('table').innerHTML = table;
+    let deleteAll = document.getElementById('deleteAll');
+    console.log(deleteAll);
+    if (datepro.length > 0) {
+
+        deleteAll.innerHTML = `
+        <button onclick="deleteAll()">delete All(${datepro.length})</button>
+        `
+    }
+    else {
+        deleteAll.innerHTML = '';
+    }
+
+};
+showData();
+
+function deleteDate(i) {
+
+    datepro.splice(i, 1);
+    localStorage.product = JSON.stringify(datepro);
+    showData()
+};
+
+
+function deleteAll() {
+    localStorage.clear()
+    datepro.splice(0)
+    showData()
+
+};
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
